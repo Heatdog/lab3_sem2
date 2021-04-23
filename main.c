@@ -13,10 +13,12 @@ const int Msize = 7;
 
 
 int main() {
-    Table table = {NULL, NULL, Msize, Msize, 0,0};
+    Table table = {NULL, NULL, NULL, Msize, Msize, 0,0};
     int rc;
     table.ks1 = calloc(Msize, sizeof (KeySpace1));
     table = table2_new(table, Msize);
+    table.massItem = malloc(sizeof (mass_item));
+    table.massItem->n = 0;
     while ((rc = dialog(msgs, NMsgs)))
         if (!fptr[rc](&table))
             break;

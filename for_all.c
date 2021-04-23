@@ -66,7 +66,7 @@ void delTable(Table* table){
     free(table->ks1);
 }
 
-void scan_char(char *k){
+char* scan_char(char *k){
     int n;
     char i[100];
     int len;
@@ -80,19 +80,40 @@ void scan_char(char *k){
     len = strlen(i);
     k = calloc(len + 1, sizeof (char ));
     memcpy(k, i, len+1);
+    return k;
 }
 
-int insert(Table* table, KeySpace1 key1, KeySpace2 key2){
+int insert(Table* table, KeySpace1 key1, KeySpace2* key2){
     int n1, n2;
+    int k;
     n1 = insert1(table, key1);
     n2 = insert2(table, key2);
-    if (n1 + n2 == 0){
+    if (n1 ==0 && n2 == 0){
         return 0;
+    } else if (n1 == 1 || n2 == 1){
+        if (n1 == 0){//если 2 не подошел, а 1 подошел
+            k = check1(table, key1.key);
+            delete1(table, k);
+        }
+        return 1;
+    } else {
+        if (n1 == 0){//аналогично
+            k = check1(table, key1.key);
+            delete1(table, k);
+        }
+        return 2;
     }
-
-
 }
 
-int check(Table* table, KeySpace1 key1, KeySpace2 ke2){
-    return 0;
+
+Table *delete_mass_item(Table* table, int number){
+    for (int i = 0; i < table->massItem->n-1; i++){
+        if (strcmp(table->ks1[number].inf->text, table->massItem[i].item->inf->text) == 0 &&
+        table->ks1[number].inf->first_int == table->massItem[i].item->inf->first_int &&
+        table->ks1[number].inf->second_int == table->massItem[i].item->inf->second_int){
+            table->massItem[i] = table->massItem[table->massItem->n];
+        }
+    }
+    table->massItem->n--;
+    return table;
 }
